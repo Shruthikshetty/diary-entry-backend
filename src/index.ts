@@ -19,6 +19,7 @@ app.get("/", (c) => {
 app.get("/api/diary", getAllDiaryEntries);
 // get single diary
 // add a new diary
+app.get("/api/diary", getAllDiaryEntries);
 // update a diary entry
 // delete a diary entry
 
