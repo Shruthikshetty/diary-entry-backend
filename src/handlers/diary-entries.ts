@@ -143,3 +143,56 @@ export async function deleteEntryId(c: Context) {
     );
   }
 }
+
+// handler to update a entry
+export async function updateEntryId(c: Context) {
+  try {
+    // get the req body
+    const body = await c.req.json<Partial<IDiaryEntry>>();
+    // validate required filed
+    if (!body.content && !body.title && !body.date && !body.mood) {
+      return c.json(
+        {
+          message: "at least one field should be present",
+          success: false,
+        },
+        400,
+      );
+    }
+    // get if from param
+    const { id } = c.req.param();
+    // find and update
+    const updatedEntry = await DiaryEntry.findByIdAndUpdate(id, body, {
+      new: true,
+    });
+
+    // in case update fail
+    if (!updatedEntry) {
+      return c.json(
+        {
+          message: "entry not found",
+          success: false,
+        },
+        404,
+      );
+    }
+
+    // if success return the updated entry
+    return c.json(
+      {
+        data: updatedEntry,
+        message: "updated successfully",
+        success: true,
+      },
+      200,
+    );
+  } catch {
+    return c.json(
+      {
+        message: "something went wrong",
+        success: false,
+      },
+      500,
+    );
+  }
+}
