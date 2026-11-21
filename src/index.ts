@@ -1,6 +1,10 @@
 import { Hono } from "hono";
 import { ConnectDB } from "./utils/connect-db";
-import { addNewDiaryEntry, getAllDiaryEntries } from "./handlers/diary-entries";
+import {
+  addNewDiaryEntry,
+  getAllDiaryEntries,
+  getSingleDiaryEntry,
+} from "./handlers/diary-entries";
 
 const app = new Hono();
 
@@ -18,6 +22,7 @@ app.get("/", (c) => {
 // get all the diary entries
 app.get("/api/diary", getAllDiaryEntries);
 // get single diary
+app.get("/api/diary/:id", getSingleDiaryEntry);
 // add a new diary
 app.post("/api/diary", addNewDiaryEntry);
 // update a diary entry

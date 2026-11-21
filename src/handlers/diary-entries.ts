@@ -28,6 +28,43 @@ export async function getAllDiaryEntries(c: Context) {
   }
 }
 
+export async function getSingleDiaryEntry(c: Context) {
+  try {
+    // get the params
+    const { id } = c.req.param();
+
+    // get the data from db
+    const entry = await DiaryEntry.findById(id);
+
+    if (!entry) {
+      return c.json(
+        {
+          message: "entry not found",
+          success: false,
+        },
+        404,
+      );
+    }
+
+    // send the response
+    return c.json(
+      {
+        data: entry,
+        success: true,
+      },
+      200,
+    );
+  } catch {
+    return c.json(
+      {
+        message: "something went wrong",
+        success: false,
+      },
+      500,
+    );
+  }
+}
+
 // handler to add a new diary entry
 export async function addNewDiaryEntry(c: Context) {
   try {
