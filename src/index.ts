@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { ConnectDB } from "./utils/connect-db";
+import { getAllDiaryEntries } from "./handlers/diary-entries";
 
 const app = new Hono();
 
@@ -13,5 +14,12 @@ app.use("/api/*", async (_, next) => {
 app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
+
+// get all the diary entries
+app.get("/api/diary", getAllDiaryEntries);
+// get single diary
+// add a new diary
+// update a diary entry
+// delete a diary entry
 
 export default app;
