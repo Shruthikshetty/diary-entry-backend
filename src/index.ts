@@ -1,9 +1,17 @@
-import { Hono } from 'hono'
+import { Hono } from "hono";
+import { ConnectDB } from "./utils/connect-db";
 
-const app = new Hono()
+const app = new Hono();
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+// connect to db
+app.use("/api/*", async (_, next) => {
+  await ConnectDB();
+  await next();
+});
 
-export default app
+// base route
+app.get("/", (c) => {
+  return c.text("Hello Hono!");
+});
+
+export default app;
