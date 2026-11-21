@@ -7,6 +7,7 @@ import {
   getSingleDiaryEntry,
   updateEntryId,
 } from "./handlers/diary-entries";
+import { getUser } from "./handlers/user";
 
 const app = new Hono();
 
@@ -31,4 +32,12 @@ app.post("/api/diary", addNewDiaryEntry);
 app.put("/api/diary/:id", updateEntryId);
 // delete a diary entry
 app.delete("/api/diary/:id", deleteEntryId);
+
+//get a user data
+app.get("/api/user", getUser);
+//add a user data
+
+//update a user data
+
+//delete a use data
 export default app;
