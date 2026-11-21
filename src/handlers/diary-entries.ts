@@ -106,3 +106,40 @@ export async function addNewDiaryEntry(c: Context) {
     );
   }
 }
+
+// handler to delete a diary entry by id
+export async function deleteEntryId(c: Context) {
+  try {
+    // get the if from params
+    const { id } = c.req.param();
+    // delete the entry from db
+    const deletedEntry = await DiaryEntry.findByIdAndDelete(id);
+    if (!deletedEntry) {
+      return c.json(
+        {
+          message: "entry not found",
+          success: false,
+        },
+        404,
+      );
+    }
+
+    // if deleted successfully
+    return c.json(
+      {
+        data: deletedEntry,
+        message: "deleted successfully",
+        success: true,
+      },
+      200,
+    );
+  } catch {
+    return c.json(
+      {
+        message: "something went wrong",
+        success: false,
+      },
+      500,
+    );
+  }
+}

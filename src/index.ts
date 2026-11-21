@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { ConnectDB } from "./utils/connect-db";
 import {
   addNewDiaryEntry,
+  deleteEntryId,
   getAllDiaryEntries,
   getSingleDiaryEntry,
 } from "./handlers/diary-entries";
@@ -27,5 +28,5 @@ app.get("/api/diary/:id", getSingleDiaryEntry);
 app.post("/api/diary", addNewDiaryEntry);
 // update a diary entry
 // delete a diary entry
-
+app.delete("/api/diary/:id", deleteEntryId);
 export default app;
