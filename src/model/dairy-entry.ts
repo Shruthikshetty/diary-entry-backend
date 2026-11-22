@@ -1,7 +1,8 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 // types
 export type IDiaryEntry = {
+  userId: Types.ObjectId | string;
   title: string;
   content: string;
   date?: Date;
@@ -12,6 +13,12 @@ export type IDiaryEntry = {
 
 // create schema
 const diaryEntrySchema = new Schema<IDiaryEntry>({
+  userId: {
+    type: Types.ObjectId,
+    ref: "User",
+    required: true,
+    index: true,
+  },
   title: {
     type: String,
     required: [true, "Title is required"],
