@@ -6,4 +6,4 @@ export type AppVariables = {
   };
 };
 
-type AppContext = Context<AppVariables>;
+export type AppContext = Context<AppVariables>;

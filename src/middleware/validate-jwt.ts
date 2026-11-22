@@ -44,7 +44,7 @@ export async function validateJwt(c: Context, next: Next) {
     // else set the user in context
     c.set("userId", jwtPayload.id);
     // go to next
-    next();
+    await next();
   } catch {
     return c.json(
       { message: "Unauthorized: Invalid or expired token", success: false },

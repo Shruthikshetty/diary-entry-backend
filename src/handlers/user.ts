@@ -1,13 +1,14 @@
 import { Context } from "hono";
 import User, { IUser } from "../model/user";
+import { AppContext } from "../../types";
 
 // handler to get a user data by id
-export async function getUser(c: Context) {
+export async function getUser(c: AppContext) {
   try {
-    // get a id from params
-    const { id } = c.req.param();
+    // get user id from auth
+    const userId = await c.get("userId");
 
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
 
     // validate if user found
     if (!user) {
@@ -101,8 +102,8 @@ export async function updateUser(c: Context) {
     const body =
       await c.req.json<Partial<Pick<IUser, "name" | "password" | "email">>>();
 
-    // get id from params
-    const { id } = c.req.param();
+    // get id from auth
+    const userId = await c.get("userId");
 
     if (!body.name && !body.email && !body.password) {
       return c.json(
@@ -119,7 +120,9 @@ export async function updateUser(c: Context) {
       body.password = await Bun.password.hash(body.password);
     }
 
-    const updatedUser = await User.findByIdAndUpdate(id, body);
+    const updatedUser = await User.findByIdAndUpdate(userId, body, {
+      new: true,
+    });
 
     // validate if user found
     if (!updatedUser) {
@@ -155,10 +158,10 @@ export async function updateUser(c: Context) {
 // route to delete user
 export async function deleteUser(c: Context) {
   try {
-    // get id from params
-    const { id } = c.req.param();
+    // get id from auth
+    const userId = await c.get("userId");
 
-    const deletedUser = await User.findByIdAndDelete(id);
+    const deletedUser = await User.findByIdAndDelete(userId);
 
     // validate
     if (!deletedUser) {

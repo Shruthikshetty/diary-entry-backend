@@ -48,7 +48,7 @@ app.post("/api/login", authenticate);
 //get a user data
 app.get("/api/user", getUser);
 //update a user data
-app.put("/api/user/:id", updateUser);
+app.put("/api/user", updateUser);
 //delete a use data
-app.delete("/api/user/:id", deleteUser);
+app.delete("/api/user", deleteUser);
 export default app;
