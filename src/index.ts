@@ -10,6 +10,7 @@ import {
 import { addUser, deleteUser, getUser, updateUser } from "./handlers/user";
 import { validateJwt } from "./middleware/validate-jwt";
 import { authenticate } from "./handlers/auth";
+import { logger } from "hono/logger";
 
 const app = new Hono();
 
@@ -23,6 +24,9 @@ app.use("/api/*", async (_, next) => {
 app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
+
+// logging
+app.use(logger());
 
 //https://hono.dev/docs/guides/middleware#routing
 // attach auth middler
@@ -51,4 +55,5 @@ app.get("/api/user", getUser);
 app.put("/api/user", updateUser);
 //delete a use data
 app.delete("/api/user", deleteUser);
+
 export default app;
