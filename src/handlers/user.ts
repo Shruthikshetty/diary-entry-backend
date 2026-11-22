@@ -1,6 +1,7 @@
 import { Context } from "hono";
 import User, { IUser } from "../model/user";
 import { AppContext } from "../../types";
+import { mongo } from "mongoose";
 
 // handler to get a user data by id
 export async function getUser(c: AppContext) {
@@ -84,7 +85,21 @@ export async function addUser(c: Context) {
     );
 
     // create user
-  } catch {
+  } catch (e: any) {
+    // check if duplicate
+    if (
+      e instanceof mongo.MongoServerError &&
+      e?.errorResponse?.code == 11000
+    ) {
+      return c.json(
+        {
+          message: "User already exists",
+          success: false,
+        },
+        409,
+      );
+    }
+    // generic error
     return c.json(
       {
         message: "something went wrong",
