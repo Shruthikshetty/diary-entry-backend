@@ -111,14 +111,14 @@ export async function addUser(c: Context) {
 }
 
 // update user
-export async function updateUser(c: Context) {
+export async function updateUser(c: AppContext) {
   try {
     // get the request body
     const body =
       await c.req.json<Partial<Pick<IUser, "name" | "password" | "email">>>();
 
     // get id from auth
-    const userId = await c.get("userId");
+    const userId = c.get("userId");
 
     if (!body.name && !body.email && !body.password) {
       return c.json(
@@ -171,10 +171,10 @@ export async function updateUser(c: Context) {
 }
 
 // route to delete user
-export async function deleteUser(c: Context) {
+export async function deleteUser(c: AppContext) {
   try {
     // get id from auth
-    const userId = await c.get("userId");
+    const userId = c.get("userId");
 
     const deletedUser = await User.findByIdAndDelete(userId);
 
