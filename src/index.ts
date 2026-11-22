@@ -8,6 +8,8 @@ import {
   updateEntryId,
 } from "./handlers/diary-entries";
 import { addUser, deleteUser, getUser, updateUser } from "./handlers/user";
+import { validateJwt } from "./middleware/validate-jwt";
+import { authenticate } from "./handlers/auth";
 
 const app = new Hono();
 
@@ -22,6 +24,11 @@ app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
 
+//https://hono.dev/docs/guides/middleware#routing
+// attach auth middler
+app.use("/api/diary/*", validateJwt);
+app.use("/api/user/*", validateJwt);
+
 // get all the diary entries
 app.get("/api/diary", getAllDiaryEntries);
 // get single diary
@@ -33,10 +40,13 @@ app.put("/api/diary/:id", updateEntryId);
 // delete a diary entry
 app.delete("/api/diary/:id", deleteEntryId);
 
+//sign up
+app.post("/api/signup", addUser);
+// login
+app.post("/api/login", authenticate);
+
 //get a user data
 app.get("/api/user", getUser);
-//add a user data
-app.post("/api/user", addUser);
 //update a user data
 app.put("/api/user/:id", updateUser);
 //delete a use data

@@ -61,6 +61,7 @@ export async function authenticate(c: Context) {
     const token = await sign(
       jwtPayload,
       process.env.JWT_SECRET ?? "STRONG SECRET",
+      "HS256", // algo
     );
 
     // set cookies for web app
