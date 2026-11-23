@@ -11,14 +11,32 @@ import { addUser, deleteUser, getUser, updateUser } from "./handlers/user";
 import { validateJwt } from "./middleware/validate-jwt";
 import { authenticate } from "./handlers/auth";
 import { logger } from "hono/logger";
+import { cors } from "hono/cors";
 
 const app = new Hono();
+
+//CORS means Cross-Origin Resource Sharing.
+app.use(
+  "*",
+  cors({
+    origin: (origin) => {
+      if (["http://127.0.0.1:3001", "http://localhost:3001"].includes(origin))
+        // allow dev urls for now
+        return origin;
+    },
+    allowMethods: ["GET", "POST", "PUT", "DELETE"],
+    allowHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  }),
+);
 
 // connect to db
 app.use("/api/*", async (_, next) => {
   await ConnectDB();
   await next();
 });
+
+// set up cors
 
 // base route
 app.get("/", (c) => {
