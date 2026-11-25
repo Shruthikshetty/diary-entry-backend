@@ -7,6 +7,7 @@ export type IDiaryEntry = {
   content: string;
   date?: Date;
   mood?: "happy" | "neutral" | "sad" | "excited" | "stressed";
+  isFavorite: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -37,6 +38,10 @@ const diaryEntrySchema = new Schema<IDiaryEntry>({
     type: String,
     enum: ["happy", "neutral", "sad", "excited", "stressed"],
     default: "neutral",
+  },
+  isFavorite: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,
