@@ -166,7 +166,13 @@ export async function updateEntryId(c: AppContext) {
     // get user id from auth
     const userId = c.get("userId");
     // validate required filed
-    if (!body.content && !body.title && !body.date && !body.mood) {
+    if (
+      !body.content &&
+      !body.title &&
+      !body.date &&
+      !body.mood &&
+      (body.isFavorite == undefined || body.isFavorite == null)
+    ) {
       return c.json(
         {
           message: "at least one field should be present",
