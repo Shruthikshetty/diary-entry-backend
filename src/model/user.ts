@@ -3,7 +3,7 @@ import { model, Schema } from "mongoose";
 export type IUser = {
   name: string;
   password: string;
-  email: string;
+  email?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };

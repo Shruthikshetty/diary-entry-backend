@@ -5,7 +5,8 @@
   },
   "dependencies": {
     "hono": "^4.13.16",
-    "mongoose": "^9.12.3"
+    "mongoose": "^9.12.3",
+    "resend": "^6.39.0"
   },
   "devDependencies": {
     "@types/bun": "latest"

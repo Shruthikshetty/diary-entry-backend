@@ -9,7 +9,7 @@ import {
 } from "./handlers/diary-entries";
 import { addUser, deleteUser, getUser, updateUser } from "./handlers/user";
 import { validateJwt } from "./middleware/validate-jwt";
-import { authenticate } from "./handlers/auth";
+import { authenticate, forgotPassword } from "./handlers/auth";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 
@@ -66,6 +66,8 @@ app.delete("/api/diary/:id", deleteEntryId);
 app.post("/api/signup", addUser);
 // login
 app.post("/api/login", authenticate);
+// forgot password
+app.post("/api/forgot-password/:name", forgotPassword);
 
 //get a user data
 app.get("/api/user", getUser);
