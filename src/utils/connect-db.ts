@@ -13,8 +13,8 @@ export async function ConnectDB() {
 
   try {
     await mongoose.connect(uri);
-  } catch {
-    console.error("connection to db failed ");
-    process.exit(1);
+  } catch (err) {
+    console.error("connection to db failed:", err);
+    throw err;
   }
 }
