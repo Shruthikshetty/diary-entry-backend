@@ -71,6 +71,9 @@ export async function authenticate(c: Context) {
       httpOnly: true, // http only cookie hides from direct clint side js
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      ...(process.env.COOKIE_DOMAIN
+        ? { domain: process.env.COOKIE_DOMAIN }
+        : {}),
       path: "/",
       maxAge: 60 * 60 * 24, // in seconds  (1 day)
     });
