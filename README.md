@@ -33,6 +33,8 @@ bun run dev
 
 The API runs at `http://localhost:3000`.
 
+When deploying to Cloud Run, set `FRONTEND_URL` to the deployed frontend's origin, not the API URL (for example, `https://your-app.example.com`). CORS allows that origin and `http://localhost:3001` / `http://127.0.0.1:3001`. Redeploy after changing the environment variable.
+
 ## API
 
 | Method                 | Route                        | Description                                    |

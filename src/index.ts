@@ -15,14 +15,19 @@ import { cors } from "hono/cors";
 
 const app = new Hono();
 
+const frontendUrl = process.env.FRONTEND_URL;
+const allowedOrigins = new Set([
+  "http://127.0.0.1:3001",
+  "http://localhost:3001",
+  ...(frontendUrl ? [new URL(frontendUrl).origin] : []),
+]);
+
 //CORS means Cross-Origin Resource Sharing.
 app.use(
   "*",
   cors({
     origin: (origin) => {
-      if (["http://127.0.0.1:3001", "http://localhost:3001"].includes(origin))
-        // allow dev urls for now
-        return origin;
+      if (allowedOrigins.has(origin)) return origin;
     },
     allowMethods: ["GET", "POST", "PUT", "DELETE"],
     allowHeaders: ["Content-Type", "Authorization"],
