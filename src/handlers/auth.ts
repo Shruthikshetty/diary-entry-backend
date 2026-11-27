@@ -1,8 +1,9 @@
 import { Context, Hono } from "hono";
 import User, { IUser } from "../model/user";
 import { sign } from "hono/jwt";
-import { setCookie } from "hono/cookie";
+import { deleteCookie, setCookie } from "hono/cookie";
 import { Resend } from "resend";
+import { AppContext } from "../../types";
 
 // route to authenticate user and return the jwt
 export async function authenticate(c: Context) {
@@ -160,6 +161,29 @@ export async function forgotPassword(c: Context) {
       },
       200,
     );
+  } catch {
+    return c.json(
+      {
+        message: "something went wrong",
+        success: false,
+      },
+      500,
+    );
+  }
+}
+
+// log out endpoint
+export async function logOut(c: AppContext) {
+  try {
+    //clear the cookies
+    deleteCookie(c, "auth_token", {
+      path: "/",
+      ...(process.env.COOKIE_DOMAIN
+        ? { domain: process.env.COOKIE_DOMAIN }
+        : {}),
+    });
+
+    return c.json({ message: "Logged out successfully", success: true });
   } catch {
     return c.json(
       {
