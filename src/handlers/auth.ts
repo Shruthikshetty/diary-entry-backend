@@ -135,14 +135,15 @@ export async function forgotPassword(c: Context) {
     const resend = new Resend(process.env.RESENT_KEY);
 
     const { error } = await resend.emails.send({
-      from: `StillDiary <${process.env.RESENT_SENDER}>`, // for testing
+      from: process.env.RESEND_SENDER ?? "",
       to: user.email,
       subject: "Reset your password",
-      html: `<p>Hi ${user.name ?? name},</p><p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 1 hour.</p>`,
+      html: `<p>Hi ${user.name ?? "there"},</p><p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 1 hour.</p>`,
     });
 
     // in case of email send fail
     if (error) {
+      console.error("Forgot password email send failed:", error);
       return c.json(
         {
           message: "failed to send reset email",
