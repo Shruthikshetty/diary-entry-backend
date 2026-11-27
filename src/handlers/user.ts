@@ -3,6 +3,8 @@ import User, { IUser } from "../model/user";
 import { AppContext } from "../../types";
 import { mongo } from "mongoose";
 
+const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
+
 // handler to get a user data by id
 export async function getUser(c: AppContext) {
   try {
@@ -46,13 +48,16 @@ export async function getUser(c: AppContext) {
 export async function addUser(c: Context) {
   try {
     // get the body
-    const body = await c.req.json<IUser>();
+    const body = await c.req.json<
+      Pick<IUser, "email" | "password"> & Partial<Pick<IUser, "name">>
+    >();
+    const email = body.email?.trim().toLowerCase();
 
     // validate
-    if (!body.name || !body.password) {
+    if (!email || !EMAIL_REGEX.test(email) || !body.password) {
       return c.json(
         {
-          message: "Please fill the required fields",
+          message: "A valid email and password are required",
           success: false,
         },
         400,
@@ -64,7 +69,8 @@ export async function addUser(c: Context) {
 
     // create new user
     const newUser = new User({
-      name: body.name,
+      ...(body.name?.trim() ? { name: body.name.trim() } : {}),
+      email,
       password: hash,
     });
 
@@ -93,7 +99,7 @@ export async function addUser(c: Context) {
     ) {
       return c.json(
         {
-          message: "User already exists",
+          message: "An account with this email already exists",
           success: false,
         },
         409,
@@ -137,6 +143,7 @@ export async function updateUser(c: AppContext) {
 
     const updatedUser = await User.findByIdAndUpdate(userId, body, {
       new: true,
+      runValidators: true, // validate request body
     });
 
     // validate if user found

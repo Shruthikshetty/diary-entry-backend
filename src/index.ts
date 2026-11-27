@@ -74,7 +74,7 @@ app.post("/api/login", authenticate);
 // log out
 app.post("/api/logout", logOut);
 // forgot password
-app.post("/api/forgot-password/:name", forgotPassword);
+app.post("/api/forgot-password", forgotPassword);
 
 //get a user data
 app.get("/api/user", getUser);

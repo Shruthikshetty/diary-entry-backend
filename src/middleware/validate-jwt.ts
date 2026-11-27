@@ -31,7 +31,7 @@ export async function validateJwt(c: Context, next: Next) {
       token,
       process.env.JWT_SECRET ?? "STRONG SECRET",
       "HS256",
-    )) as JWTPayload & { id: string; name: string };
+    )) as JWTPayload & { id: string };
 
     // get the user from teh db
     const user = await User.findById(jwtPayload.id);

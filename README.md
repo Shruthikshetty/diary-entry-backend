@@ -40,9 +40,9 @@ When deploying to Cloud Run, set `FRONTEND_URL` to the deployed frontend's origi
 | Method                 | Route                        | Description                                    |
 | ---------------------- | ---------------------------- | ---------------------------------------------- |
 | `GET`                  | `/`                          | Basic server response                          |
-| `POST`                 | `/api/signup`                | Create an account                              |
-| `POST`                 | `/api/login`                 | Log in and receive a JWT                       |
-| `POST`                 | `/api/forgot-password/:name` | Send a password reset link to the user's email |
+| `POST`                 | `/api/signup`                | Create an account with an email and password   |
+| `POST`                 | `/api/login`                 | Log in with email and password                 |
+| `POST`                 | `/api/forgot-password`       | Send a password reset link by email            |
 | `GET`                  | `/api/diary`                 | List your diary entries                        |
 | `POST`                 | `/api/diary`                 | Create a diary entry                           |
 | `GET`                  | `/api/diary/:id`             | Get one diary entry                            |
@@ -51,3 +51,13 @@ When deploying to Cloud Run, set `FRONTEND_URL` to the deployed frontend's origi
 | `GET`, `PUT`, `DELETE` | `/api/user`                  | Get, update, or delete your account            |
 
 Diary and user routes require authentication. Send the JWT returned by `/api/login` in the `Authorization: Bearer <token>` header. Login also sets an `auth_token` cookie.
+
+Signup and login expect JSON bodies containing `email` and `password`. Signup may also include an optional `name`. Email addresses are trimmed and stored in lowercase; email addresses must be unique.
+
+Password reset also expects the email in the JSON body:
+
+```json
+{ "email": "you@example.com" }
+```
+
+Before deploying this email requirement to a database with existing users, populate a valid, unique email for every account. Then remove the existing unique index on `name` (commonly named `name_1`) if duplicate names should be allowed. Do not enable the unique email index until existing records have been backfilled and duplicate emails resolved.

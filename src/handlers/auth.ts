@@ -8,14 +8,15 @@ import { AppContext } from "../../types";
 // route to authenticate user and return the jwt
 export async function authenticate(c: Context) {
   try {
-    // get the name and pass from the body
-    const body = await c.req.json<Pick<IUser, "password" | "name">>();
+    // get the email and password from the body
+    const body = await c.req.json<Pick<IUser, "password" | "email">>();
+    const email = body.email?.trim().toLowerCase();
 
     // validation
-    if (!body.name || !body.password) {
+    if (!email || !body.password) {
       return c.json(
         {
-          message: "both name and password are required",
+          message: "both email and password are required",
           success: false,
         },
         400,
@@ -24,7 +25,7 @@ export async function authenticate(c: Context) {
 
     // validate from the database
     const user = await User.findOne({
-      name: body.name,
+      email,
     });
     // in case no user found
     if (!user) {
@@ -55,7 +56,6 @@ export async function authenticate(c: Context) {
     // generate jwt
     const jwtPayload = {
       id: user._id.toString(),
-      name: user.name,
       exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // in seconds  (1 day)
     };
 
@@ -102,10 +102,10 @@ export async function authenticate(c: Context) {
 export async function forgotPassword(c: Context) {
   try {
     // get the name form the params
-    const { name } = c.req.param();
+    const body = await c.req.json<{ email: string }>();
     // get the user from name
     const user = await User.findOne({
-      name: name,
+      email: body?.email ?? "",
     });
 
     if (!user || !user.email) {
@@ -122,7 +122,6 @@ export async function forgotPassword(c: Context) {
     const resetToken = await sign(
       {
         id: user._id.toString(),
-        name: user.name,
         purpose: "password-reset",
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 1, // 1 hour
       },
@@ -139,7 +138,7 @@ export async function forgotPassword(c: Context) {
       from: `StillDiary <${process.env.RESENT_SENDER}>`, // for testing
       to: user.email,
       subject: "Reset your password",
-      html: `<p>Hi ${user.name},</p><p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 1 hour.</p>`,
+      html: `<p>Hi ${user.name ?? name},</p><p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 1 hour.</p>`,
     });
 
     // in case of email send fail
